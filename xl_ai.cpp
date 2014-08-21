@@ -1054,7 +1054,6 @@ bool  XlIsF(uint8_t p)
 if (_layer1[p] != Empty)
 return false;
 	*/
-	if(info_exact5 < 2) return false;
 	switch (_layer3[Black][p])
 	{
 	case FMP_L:

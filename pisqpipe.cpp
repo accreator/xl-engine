@@ -147,7 +147,7 @@ static void do_command()
     if((info=get_cmd_param("timeout_turn",param))!=0) info_timeout_turn=atoi(info);
     if((info=get_cmd_param("time_left",param))!=0) info_time_left=atoi(info);
     if((info=get_cmd_param("game_type",param))!=0) info_game_type=atoi(info);
-    if((info=get_cmd_param("rule",param))!=0){ e=atoi(info); info_exact5=e&1; info_continuous=(e>>1)&1; }
+    if((info=get_cmd_param("rule",param))!=0){ e=atoi(info); info_exact5=e/*e&1*/; info_continuous=(e>>1)&1; }
     if((info=get_cmd_param("folder",param))!=0) strncpy(dataFolder,info,sizeof(dataFolder)-1);
     /* unknown info is ignored */
   } 
