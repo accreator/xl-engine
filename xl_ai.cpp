@@ -31,10 +31,10 @@
 #include "xl_ai.h"
 
 // config
-#define HASHTT_SIZE _4M
-#define VC4TT_SIZE _1M
+#define HASHTT_SIZE _16M
+#define VC4TT_SIZE _4M
 #define HASH_KEY uint32_t
-#define MAX_VC4_NODE 1000000
+#define MAX_VC4_NODE 10000
 #define NOR_VC4_NODE 10000
 #define MAX_SEARCH_NODE 10000
 #define MAX_DEPTH 18
