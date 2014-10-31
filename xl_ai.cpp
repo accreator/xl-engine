@@ -377,17 +377,20 @@ void XlQuickSort(char A[],uint8_t move[],int low,int high)
 
 void XlReset()
 {
+	int reset = !(_node == 0 && _vc4_node == 0 && _block_node == 0);
 	memset(_layer1, Empty, sizeof(_layer1));
 	memset(_layer2, FSP_1, sizeof(_layer2));
 	memset(_layer3, FMP_1, sizeof(_layer3));
 	memset(_att,0,sizeof(_att));
+	
 	_num = 0;
 	//	_num4[0]=0;
 	//	_num4[1]=0;
 
 	_hashIndex=0;
 	_hashCheck=0;
-	XlResetHistoryTable();
+	if(reset)
+		XlResetHistoryTable();
 	_node=0;
 	_vc4_node=0;
 	_block_node=0;

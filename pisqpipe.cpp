@@ -23,7 +23,7 @@ int terminate; /* return from brain_turn when terminate>0 */
 unsigned start_time; /* tick count at the beginning of turn */
 char dataFolder[256]; /* folder for persistent files */
 
-static char cmd[256];
+static char cmd[65536];
 static HANDLE event1,event2;
 
 
