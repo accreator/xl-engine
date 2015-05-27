@@ -2,6 +2,7 @@
 
   Copyright (C) 2005-2014 Chengtao Chen
   Copyright (C) 2014 Kai Sun
+  Copyright (C) 2015 Kai Sun, Tianyi Hao
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License

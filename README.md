@@ -3,6 +3,7 @@ xl-engine
 
 * Copyright (C) 2005-2014 Chengtao Chen
 * Copyright (C) 2014 Kai Sun
+* Copyright (C) 2015 Kai Sun, Tianyi Hao
 
 Xl (alias Niren) is a competitive renju program (NOT support gomoku), originally designed by Chengtao Chen. Invited by XR, Kai Sun modified xl to make it support Gomocup protocol.
 

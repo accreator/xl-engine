@@ -2,6 +2,7 @@
 
   Copyright (C) 2005-2014 Chengtao Chen
   Copyright (C) 2014 Kai Sun
+  Copyright (C) 2015 Kai Sun, Tianyi Hao
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -38,7 +39,7 @@
 #define MAX_VC4_NODE 10000
 #define NOR_VC4_NODE 10000
 #define MAX_SEARCH_NODE 2147483647
-#define MAX_DEPTH 18
+#define MAX_DEPTH 100
 #define EXT_DEPTH 3
 
 // value table
@@ -88,6 +89,8 @@ HISTORYNODE;
 
 static VC4TTITEM _VC4TT[2][VC4TT_SIZE];
 static HASHTTITEM _hashTT[HASHTT_SIZE];
+
+static char _time_out;
 
 static uint32_t _node;
 static uint32_t _vc4_node;
@@ -1189,6 +1192,7 @@ void XlGetLayer3(uint8_t layer3[][256], POSFORMAT pos)
 
 void XlWriteVc4TT(char value, uint8_t side,uint8_t p)
 {
+	if (_time_out) return;
 	VC4TTITEM *ptt = &_VC4TT[side][_hashIndex % VC4TT_SIZE];
 	ptt->key = _hashCheck;
 	ptt->value = value;
@@ -1492,6 +1496,7 @@ char QVC4(uint8_t side,uint8_t def[][256])
 	char ret,max=-INF;
 	if(clock()-time_start>=time_move)
 	{
+		_time_out = 1;
 		return max;
 	}
 
@@ -1624,6 +1629,7 @@ char QVC4_p(uint8_t p,uint8_t side,uint8_t def[][256])
 	char ret,max=-INF;
 	if(clock()-time_start>=time_move)
 	{
+		_time_out = 1;
 		return UNV;
 	}
 
@@ -2096,6 +2102,7 @@ char XlReadHashTT(char alpha,char beta,char depth)
 
 void XlWriteHashTT(char depth, char value, char flag)
 {
+	if (_time_out) return;
 	HASHTTITEM *p = &_hashTT[_hashIndex %HASHTT_SIZE];
 	p->key = _hashCheck;
 	p->depth = depth;
@@ -2113,6 +2120,7 @@ char XlAlphaBeta(uint8_t side, char alpha, char beta, char depth,uint8_t att)
 {
 	if(clock()-time_start>=time_move)
 	{
+		_time_out = 1;
 		return alpha;
 	}
 	char value;
@@ -2279,6 +2287,7 @@ char XlSearchRoot(char alpha, char beta, char depth )
 	uint8_t side,ml[256],def[2][256];
 	if(clock()-time_start>=time_move)
 	{
+		_time_out = 1;
 		return alpha;
 	}
 
@@ -2290,7 +2299,7 @@ char XlSearchRoot(char alpha, char beta, char depth )
 	//初始化
 	side=SIDE(_num);
 	opp_side=OPP(side);
-	_best_p=0xff;
+	//_best_p=0xff;
 
 	//看对手先手
 	memset(def,'\0',sizeof(def));
@@ -2328,10 +2337,6 @@ char XlSearchRoot(char alpha, char beta, char depth )
 			_sendfunc(SEND_CURMOVE,(uint32_t)ml[n]);
 		}
 #endif
-		if(clock()-time_start>=time_move)
-		{
-			break;
-		}
 		p=ml[n];
 		if(att==ATT_4 && !def[side][p])
 		{
@@ -2346,7 +2351,7 @@ char XlSearchRoot(char alpha, char beta, char depth )
 			XlRemoveStone();
 		}
 		//TRACE("[%d]=%d\n",ml[n],value);
-		if(clock()-time_start>=time_move)
+		if (_time_out)
 		{
 			break;
 		}
@@ -2369,10 +2374,12 @@ char XlSearchRoot(char alpha, char beta, char depth )
 	}
 
 	//	XlWriteHashTT(depth,beta,hflag);
-	XlAdjustHistoryOrder( ml[bestMove], side, 0x00000001<<(uint32_t)depth  );
-	_best_p=ml[bestMove];
-	//_best_p=0;
-
+	if (!_time_out)
+	{
+		XlAdjustHistoryOrder(ml[bestMove], side, 0x00000001 << (uint32_t)depth);
+		_best_p = ml[bestMove];
+		//_best_p=0;
+	}
 	return alpha;
 }
 
@@ -2421,10 +2428,8 @@ uint8_t XlSearch(POSFORMAT pos)
 	uint8_t p,pre_num;
 	char x,y,value;
 	uint8_t ret = PASS;
-	if(clock()-time_start>=time_move)
-	{
-		return ret;
-	}
+
+	_time_out = 0;
 
 	if(_working)
 	{
@@ -2520,17 +2525,15 @@ uint8_t XlSearch(POSFORMAT pos)
 		//value=XlSearchRoot(-INF,INF,MAX_DEPTH);
 		//if(_sendfunc) _sendfunc(SEND_END,0);
 
-		for(_root_depth=8,_std_depth=4;
+		for(_root_depth=6,_std_depth=2;
 			 _node < MAX_SEARCH_NODE && value<INF && _root_depth<=MAX_DEPTH && _std_depth<=MAX_DEPTH;)
 		{
-			if(clock()-time_start>=time_move)
-			{
-				break;
-			}
 			pre_num=_max_num;
 			TRACE("_root_depth=%d,_std_depth=%d\n",_root_depth,_std_depth);
 	
 			value=XlSearchRoot(-INF,INF,_root_depth);
+
+			if (_time_out) break;
 		
 			if(pre_num==_max_num)
 			{
@@ -2539,6 +2542,8 @@ uint8_t XlSearch(POSFORMAT pos)
 					_root_depth=_std_depth+EXT_DEPTH;
 			}
 			else _root_depth++;
+
+			if ((clock() - time_start) * 4 > time_move) break;
 		}
 
 	}
