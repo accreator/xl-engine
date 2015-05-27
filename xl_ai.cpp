@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "pisqpipe.h"
 #include "xl_def.h"
@@ -36,7 +37,7 @@
 #define HASH_KEY uint32_t
 #define MAX_VC4_NODE 10000
 #define NOR_VC4_NODE 10000
-#define MAX_SEARCH_NODE 10000
+#define MAX_SEARCH_NODE 2147483647
 #define MAX_DEPTH 18
 #define EXT_DEPTH 3
 
@@ -1489,6 +1490,10 @@ char QVC4(uint8_t side,uint8_t def[][256])
 	uint8_t n1=0,n2=0,n3=0,i,p;
 	VC4TTITEM *ptt;
 	char ret,max=-INF;
+	if(clock()-time_start>=time_move)
+	{
+		return max;
+	}
 
 	ptt = &_VC4TT[side][_hashIndex % VC4TT_SIZE];
 
@@ -1617,6 +1622,10 @@ char QVC4_p(uint8_t p,uint8_t side,uint8_t def[][256])
 {
 	uint8_t p1;
 	char ret,max=-INF;
+	if(clock()-time_start>=time_move)
+	{
+		return UNV;
+	}
 
 	if(!_vc4_limit||_cancel) return UNV;
 	_vc4_limit--;
@@ -2102,6 +2111,10 @@ void XlWriteHashTT(char depth, char value, char flag)
 
 char XlAlphaBeta(uint8_t side, char alpha, char beta, char depth,uint8_t att)
 {
+	if(clock()-time_start>=time_move)
+	{
+		return alpha;
+	}
 	char value;
 	uint8_t p,opp_side,cnCount,n,bestMove,hflag=HTTALPHA;
 	uint8_t def[2][256],ml[256];
@@ -2264,6 +2277,10 @@ char XlSearchRoot(char alpha, char beta, char depth )
 	char value;
 	uint8_t p,att,opp_side,cnCount,n,bestMove,hflag=HTTALPHA;
 	uint8_t side,ml[256],def[2][256];
+	if(clock()-time_start>=time_move)
+	{
+		return alpha;
+	}
 
 	//Í³¼Æ
 #ifdef _XLDEBUG
@@ -2311,6 +2328,10 @@ char XlSearchRoot(char alpha, char beta, char depth )
 			_sendfunc(SEND_CURMOVE,(uint32_t)ml[n]);
 		}
 #endif
+		if(clock()-time_start>=time_move)
+		{
+			break;
+		}
 		p=ml[n];
 		if(att==ATT_4 && !def[side][p])
 		{
@@ -2325,7 +2346,10 @@ char XlSearchRoot(char alpha, char beta, char depth )
 			XlRemoveStone();
 		}
 		//TRACE("[%d]=%d\n",ml[n],value);
-
+		if(clock()-time_start>=time_move)
+		{
+			break;
+		}
 
 		if (value >= beta)
 		{
@@ -2397,6 +2421,10 @@ uint8_t XlSearch(POSFORMAT pos)
 	uint8_t p,pre_num;
 	char x,y,value;
 	uint8_t ret = PASS;
+	if(clock()-time_start>=time_move)
+	{
+		return ret;
+	}
 
 	if(_working)
 	{
@@ -2495,6 +2523,10 @@ uint8_t XlSearch(POSFORMAT pos)
 		for(_root_depth=8,_std_depth=4;
 			 _node < MAX_SEARCH_NODE && value<INF && _root_depth<=MAX_DEPTH && _std_depth<=MAX_DEPTH;)
 		{
+			if(clock()-time_start>=time_move)
+			{
+				break;
+			}
 			pre_num=_max_num;
 			TRACE("_root_depth=%d,_std_depth=%d\n",_root_depth,_std_depth);
 	

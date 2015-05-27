@@ -8,6 +8,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <time.h>
 #include "xl_def.h"
 #include "pisqpipe.h"
 
@@ -22,6 +23,8 @@ int info_continuous=0; /* 0:single game, 1:continuous */
 int terminate; /* return from brain_turn when terminate>0 */
 unsigned start_time; /* tick count at the beginning of turn */
 char dataFolder[256]; /* folder for persistent files */
+extern int time_start=0;
+extern int time_move=0;
 
 static char cmd[65536];
 static HANDLE event1,event2;
@@ -111,6 +114,15 @@ static DWORD WINAPI threadLoop(LPVOID)
 /** start thinking */
 static void turn()
 {
+	time_start=clock();
+	if(info_time_left>0)
+	{
+		time_move=min(info_timeout_turn-100,info_time_left/20);
+	}
+	else
+	{
+		time_move=info_timeout_turn-100;
+	}
   terminate=0;
   ResetEvent(event2);
   SetEvent(event1);

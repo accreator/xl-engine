@@ -13,6 +13,8 @@ extern int info_continuous; /* 0:single game, 1:continuous */
 extern int terminate; /* return from brain_turn when terminate>0 */
 extern unsigned start_time; /* tick count at the beginning of turn */
 extern char dataFolder[256]; /* folder for persistent files */
+extern int time_start;
+extern int time_move;
 
 /* you have to implement these functions */
 void brain_init(); /* create the board and call pipeOut("OK"); */
