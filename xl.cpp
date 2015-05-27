@@ -294,7 +294,6 @@ void MoveBack(void)
 int ComputerPlay(void)
 {
 	uint8_t p;
-
 	printf("MESSAGE computer: ");
 	if(0xff!=(p = XlSearch(_pos) ))
 	{
