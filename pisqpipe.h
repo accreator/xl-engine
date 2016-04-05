@@ -3,12 +3,12 @@
 #define XL_PISQPIPE_H_INCLUDE
 /* information about a game - you should use these variables */
 extern int width,height; /* the board size */
-extern int info_timeout_turn;  /* 每招时间(ms) */
-extern int info_timeout_match; /* 一场比赛的时间 */
-extern int info_time_left;  /* 剩余时间 */
-extern int info_max_memory; /* 内存限制(字节), 无限制时为0 */
-extern int info_game_type;  /* 0:对手是人, 1:对手是机器, 2:tournament, 3:network tournament */
-extern int info_exact5;     /* 0:支持长连, 1:长连不算赢 */
+extern int info_timeout_turn;  
+extern int info_timeout_match; 
+extern int info_time_left;  
+extern int info_max_memory; 
+extern int info_game_type;  
+extern int info_exact5;     
 extern int info_continuous; /* 0:single game, 1:continuous */
 extern int terminate; /* return from brain_turn when terminate>0 */
 extern unsigned start_time; /* tick count at the beginning of turn */

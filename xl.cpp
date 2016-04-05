@@ -1,8 +1,8 @@
 /*
 
   Copyright (C) 2005-2014 Chengtao Chen
-  Copyright (C) 2014 Kai Sun
-  Copyright (C) 2015 Kai Sun, Tianyi Hao
+  Copyright (C) 2014 Chengtao Chen, Kai Sun
+  Copyright (C) 2015-2016 Chengtao Chen, Kai Sun, Tianyi Hao
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -445,7 +445,7 @@ int xl_main()
 #include "pisqpipe.h"
 #include <windows.h>
 
-const char *infotext="name=\"xl\", author=\"Chengtao Chen, Kai Sun\", version=\"0.0.1\", country=\"China\", www=\"None\"";
+const char *infotext="name=\"xl\", author=\"Chengtao Chen\", version=\"2016\", country=\"China\", www=\"None\"";
 
 #define MAX_BOARD 15
 int board[MAX_BOARD][MAX_BOARD];
@@ -459,7 +459,7 @@ void brain_init()
 	  initialized = 1;
   }
   if(width != 15 || height != 15){
-    pipeOut("ERROR size of the board");
+    pipeOut("ERROR board size must be 15x15");
     return;
   }
   NewGame();
